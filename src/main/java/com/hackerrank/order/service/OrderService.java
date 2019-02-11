@@ -3,10 +3,13 @@ package com.hackerrank.order.service;
 import com.hackerrank.order.exception.NoSuchResourceFoundException;
 import com.hackerrank.order.model.PurchaseOrder;
 import com.hackerrank.order.repository.OrderRepository;
-
+import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
+import java.io.IOException;
 import java.util.List;
+import javax.mail.internet.AddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class OrderService {
@@ -18,6 +21,9 @@ public class OrderService {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public List<PurchaseOrder> getOrdersByCustId(Long id) {
 		List<PurchaseOrder> orderslist = orderRepository.findBySearch(id);
@@ -28,7 +34,7 @@ public class OrderService {
 		return orderslist;
 	}
 
-	public PurchaseOrder createOrder(PurchaseOrder order) {
+	public PurchaseOrder createOrder(PurchaseOrder order) throws AddressException, MessagingException, IOException {
 		PurchaseOrder existingOrder = orderRepository.findOne(order.getId());
 
 		if (existingOrder != null) {
@@ -36,6 +42,7 @@ public class OrderService {
 		}
 
 		orderRepository.save(order);
+		emailService.sendmail();
 		return orderRepository.findOne(order.getId());
 	}
 

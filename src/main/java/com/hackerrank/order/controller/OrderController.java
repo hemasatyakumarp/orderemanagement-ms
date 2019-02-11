@@ -1,6 +1,9 @@
 package com.hackerrank.order.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.mail.internet.AddressException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.hackerrank.order.service.OrderService;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import com.hackerrank.order.model.*;
 
 @RestController
@@ -36,7 +40,7 @@ public class OrderController {
 	}
 
 	@RequestMapping(value = "/order", method = RequestMethod.POST)
-	public ResponseEntity<PurchaseOrder> createOrder(@RequestBody PurchaseOrder order) {
+	public ResponseEntity<PurchaseOrder> createOrder(@RequestBody PurchaseOrder order) throws AddressException, MessagingException, IOException {
 
 		return new ResponseEntity(service.createOrder(order), HttpStatus.CREATED);
 	}

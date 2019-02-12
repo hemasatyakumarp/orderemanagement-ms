@@ -1,4 +1,4 @@
-package com.hackerank.order.config;
+package com.hackerrank.order.config;
 
 import java.io.IOException;
 import java.io.PrintWriter;

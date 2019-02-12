@@ -1,4 +1,4 @@
-package com.hackerank.order.config;
+package com.hackerrank.order.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

@@ -1,13 +1,15 @@
 package com.hackerrank.order.service;
 
+import com.hackerrank.order.rabbitmq.QueueProducer;
 import com.hackerrank.order.exception.NoSuchResourceFoundException;
 import com.hackerrank.order.model.PurchaseOrder;
 import com.hackerrank.order.repository.OrderRepository;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
-import java.io.IOException;
 import java.util.List;
-import javax.mail.internet.AddressException;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 
@@ -24,7 +26,11 @@ public class OrderService {
 	
 	@Autowired
 	private EmailService emailService;
-
+	
+	@Autowired
+	private QueueProducer queueProducer;
+    
+	
 	public List<PurchaseOrder> getOrdersByCustId(Long id) {
 		List<PurchaseOrder> orderslist = orderRepository.findBySearch(id);
 		if (orderslist.isEmpty()) {
@@ -34,7 +40,7 @@ public class OrderService {
 		return orderslist;
 	}
 
-	public PurchaseOrder createOrder(PurchaseOrder order) throws AddressException, MessagingException, IOException {
+	public PurchaseOrder createOrder(PurchaseOrder order) throws Exception {
 		PurchaseOrder existingOrder = orderRepository.findOne(order.getId());
 
 		if (existingOrder != null) {
@@ -42,6 +48,7 @@ public class OrderService {
 		}
 
 		orderRepository.save(order);
+		queueProducer.produce(order.getOrderLineItem());			
 		emailService.sendmail();
 		return orderRepository.findOne(order.getId());
 	}
@@ -79,5 +86,23 @@ public class OrderService {
 		orderRepository.deleteById(id);
 		return true;
 	}
+	
+	@Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("RabbitErl19");
+        connectionFactory.setUsername("test123");
+        connectionFactory.setPassword("test123");
+        connectionFactory.setPort(15672);
+        connectionFactory.setVirtualHost("localhost");
+        return connectionFactory;
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate() {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        return template;
+    }
+
+
 
 }

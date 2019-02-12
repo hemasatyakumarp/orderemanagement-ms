@@ -1,15 +1,11 @@
 package com.hackerrank.order.model;
 
-import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 
 @Entity
-public class OrderLineItem implements Serializable{/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class OrderLineItem {
 	
 	@Id
 	private Long orderLineItemId;	
@@ -19,6 +15,8 @@ public class OrderLineItem implements Serializable{/**
 	private Long orderId;
 	
 	private int itemQty;
+		
+	
 	public Long getOrderLineItemId() {
 		return orderLineItemId;
 	}

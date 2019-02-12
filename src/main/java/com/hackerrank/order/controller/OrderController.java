@@ -40,7 +40,7 @@ public class OrderController {
 	}
 
 	@RequestMapping(value = "/order", method = RequestMethod.POST)
-	public ResponseEntity<PurchaseOrder> createOrder(@RequestBody PurchaseOrder order) throws AddressException, MessagingException, IOException {
+	public ResponseEntity<PurchaseOrder> createOrder(@RequestBody PurchaseOrder order) throws Exception {
 
 		return new ResponseEntity(service.createOrder(order), HttpStatus.CREATED);
 	}

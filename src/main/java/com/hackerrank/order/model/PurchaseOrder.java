@@ -1,22 +1,16 @@
 package com.hackerrank.order.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 
 @Entity
-public class PurchaseOrder implements Serializable{ /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class PurchaseOrder {
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,8 +30,8 @@ public class PurchaseOrder implements Serializable{ /**
 	
 	private String shippingAddress;
 	
-	@OneToMany(cascade=CascadeType.ALL)
-    private List<OrderLineItem> orderLineItems=new ArrayList<OrderLineItem>();
+	@OneToOne(cascade=CascadeType.ALL)
+	private OrderLineItem orderLineItem;
 	
 	public Long getId() {
 		return id;
@@ -87,12 +81,11 @@ public class PurchaseOrder implements Serializable{ /**
 	public void setShippingAddress(String shippingAddress) {
 		this.shippingAddress = shippingAddress;
 	}
-	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
+	public OrderLineItem getOrderLineItem() {
+		return orderLineItem;
 	}
-	public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-		this.orderLineItems = orderLineItems;
+	public void setOrderLineItem(OrderLineItem orderLineItem) {
+		this.orderLineItem = orderLineItem;
 	}
 	
-
 }
